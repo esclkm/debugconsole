@@ -5,7 +5,7 @@ defined('COT_CODE') or die('Wrong URL');
 class debugconsole
 {
 
-	private $code = '<script type="text/javascript" id="debug">(function(){',
+	private $code = '',
 		$timers = array(),
 		$counter = 0,
 		$vars = array();
@@ -21,6 +21,8 @@ class debugconsole
 	{
 		if ($this->allow)
 		{
+			
+			$this->code = '<script type="text/javascript" id="debug">(function(){' . $this->code;
 			if (sizeof($this->vars) > 0)
 			{
 				$dump = 'function dump(a,b){var c="";if(!b)b=0;var d="";for(var j=0;j++<=b;)d+=" ";if(typeof(a)==\'object\'){for(var e in a){var f=a[e];if(typeof(f)==\'object\'){c+=d+"\'"+e+"\' ...\n";c+=dump(f,b+1)}else{c+=d+"\'"+e+"\' => \""+f+"\"\n"}}}return c}';
@@ -82,10 +84,9 @@ class debugconsole
 		return $this;
 	}
 
-	/*
-	 * Сообщения в консоль
-	 */
-	private function consoleType($msg, $mode)
+	// Стандартное сообщение в консоль
+	// 'log' error warn info
+	public function log($msg, $mode = 'log')
 	{
 		if (is_string($msg))
 		{
@@ -103,33 +104,6 @@ class debugconsole
 		{
 			$this->code .= "console.".$mode."(".$msg.");";
 		}
-	}
-
-	// Стандартное сообщение в консоль
-	public function log($msg)
-	{
-		$this->consoleType($msg, "log");
-		return $this;
-	}
-
-	// Сообщение об ошибке
-	public function error($msg)
-	{
-		$this->consoleType($msg, "error");
-		return $this;
-	}
-
-	// Сообщение предупреждения
-	public function warn($msg)
-	{
-		$this->consoleType($msg, "warn");
-		return $this;
-	}
-
-	// Сообщение со значком инфо
-	public function info($msg)
-	{
-		$this->consoleType($msg, "info");
 		return $this;
 	}
 

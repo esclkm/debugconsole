@@ -27,21 +27,24 @@ if (cot_auth('plug', 'debugconsole', 'R'))
 
 	require_once cot_incfile('debugconsole', 'plug');
 
-
 	$dconsole = new debugconsole();
 	$dconsole->time('Timer');
 
-	function cot_console()
-	{
+}
+
+function cot_console()
+{
 		global $dconsole;
 		$vars = func_get_args();
-		foreach ($vars as $name => $var)
+		if(is_object($dconsole))
 		{
-			$dconsole->log($var);
+			foreach ($vars as $name => $var)
+			{
+				$dconsole->log($var);
+			}
 		}
-
-	}
-/*
-	$pdo = new DebugBar\DataCollector\PDO\TraceablePDO($db);
-	$debugbar->addCollector(new DebugBar\DataCollector\PDO\PDOCollector($pdo));*/
+		elseif ($cfg['debug_mode'])
+		{
+			cot_watch($vars);
+		}
 }
